@@ -1,6 +1,7 @@
 #include "engine.h"
 #include "modules/input/input_module.h"
 #include "modules/render/render_module.h"
+#include "modules/render/backends/vulkan/vk_renderer.h"
 
 #include "spdlog/spdlog.h"
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -26,6 +27,7 @@ App::App(const AppSettings& settings)
     world.set(KeyboardInput{});
     world.set(MouseInput{});
 
+    world.set<Renderer>(std::make_shared<gfx::vulkan::Renderer>(world.get<Window>()->get_raw_window()));
 }
 
 void App::run()
