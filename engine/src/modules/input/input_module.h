@@ -127,15 +127,6 @@ inline MouseButton& operator-=(MouseButton& a, const MouseButton b)
 
 class KeyboardInput
 {
-    KeyCode flag{ KeyCode::None };
-    KeyCode prev_flag{ KeyCode::None };
-
-    static [[nodiscard]] bool pressed_internal(const KeyCode input, const KeyCode compare);
-
-    void convert_glfw_input(GLFWwindow*);
-
-    friend struct InputModule;
-
 public:
     KeyboardInput() = default;
     ~KeyboardInput() = default;
@@ -146,21 +137,20 @@ public:
     [[nodiscard]] bool pressed(const KeyCode input) const;
 
     [[nodiscard]] bool just_pressed(const KeyCode input) const;
-};
 
-class MouseInput
-{
-    MouseButton flag{ MouseButton::None };
-    MouseButton prev_flag{ MouseButton::None };
-    f64 pos_x{ 0.0 }, pos_y{ 0.0 };
-    f64 prev_pos_x{ 0.0 }, prev_pos_y{ 0.0 };
+private:
+    KeyCode flag{ KeyCode::None };
+    KeyCode prev_flag{ KeyCode::None };
 
-    static [[nodiscard]] bool pressed_internal(const MouseButton input, const MouseButton compare);
+    static [[nodiscard]] bool pressed_internal(const KeyCode input, const KeyCode compare);
 
     void convert_glfw_input(GLFWwindow*);
 
     friend struct InputModule;
+};
 
+class MouseInput
+{
 public:
     MouseInput() = default;
     ~MouseInput() = default;
@@ -175,6 +165,18 @@ public:
     [[nodiscard]] std::pair<f64, f64> get_mouse_pos() const;
 
     [[nodiscard]] std::pair<f64, f64> get_mouse_delta() const;
+
+private:
+    MouseButton flag{ MouseButton::None };
+    MouseButton prev_flag{ MouseButton::None };
+    f64 pos_x{ 0.0 }, pos_y{ 0.0 };
+    f64 prev_pos_x{ 0.0 }, prev_pos_y{ 0.0 };
+
+    static [[nodiscard]] bool pressed_internal(const MouseButton input, const MouseButton compare);
+
+    void convert_glfw_input(GLFWwindow*);
+
+    friend struct InputModule;
 };
 
 struct InputModule

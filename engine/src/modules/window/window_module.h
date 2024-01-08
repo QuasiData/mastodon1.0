@@ -21,25 +21,30 @@ struct WindowSettings
 
 class Window
 {
-    GLFWwindow* window{ nullptr };
-
-    void init(const WindowSettings& settings);
-    [[nodiscard]] bool should_close() const;
-    void poll_events() const;
-
     friend class App;
-
 public:
     Window() = default;
     ~Window();
-    DISABLE_COPY(Window)
     Window(Window&&) noexcept;
     Window& operator=(Window&&) noexcept;
+    DISABLE_COPY(Window)
 
     [[nodiscard]] GLFWwindow* get_raw_window() const;
+
     [[nodiscard]] std::pair<u32, u32> inner_size() const;
+
     void enable_cursor() const;
+
     void disable_cursor() const;
+
+private:
+    GLFWwindow* window{ nullptr };
+
+    void init(const WindowSettings& settings);
+
+    [[nodiscard]] bool should_close() const;
+
+    void poll_events() const;
 };
 
 struct WindowModule

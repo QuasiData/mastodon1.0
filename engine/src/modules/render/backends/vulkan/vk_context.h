@@ -31,12 +31,16 @@ class Context
 {
 public:
     explicit Context(GLFWwindow* w);
+
     void destroy();
+
     void resize_swapchain();
 
 private:
     static VkInstance create_instance();
+
     void create_device();
+
     void finalize_swapchain();
 
     GLFWwindow* window{ nullptr };

@@ -17,6 +17,7 @@ class App
 public:
     flecs::world world{};
     explicit App(const AppSettings& settings);
+
     void run();
 
 private:

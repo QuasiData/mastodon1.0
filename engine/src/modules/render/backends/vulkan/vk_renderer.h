@@ -12,6 +12,7 @@ public:
     DISABLE_COPY_AND_MOVE(Renderer)
 
     void render(flecs::world* w) override;
+
     void add_meshes(const MeshData& mesh_data) override;
 
 private:
