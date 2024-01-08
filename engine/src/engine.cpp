@@ -9,11 +9,16 @@
 #include "glm/glm.hpp"
 
 #include <chrono>
+#include <thread>
 
 namespace mas
 {
 App::App(const AppSettings& settings)
 {
+    const auto threads = std::thread::hardware_concurrency();
+    spdlog::info("Cores detected: {}", threads);
+    world.set_threads(static_cast<i32>(threads));
+
     // Import all modules
     world.import<TransformModule>();
     world.import<WindowModule>();

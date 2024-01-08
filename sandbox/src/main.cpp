@@ -13,6 +13,12 @@ int main()
         },
     };
     auto app = mas::App(settings);
+
+    for (usize i{ 0 }; i < 10000000; ++i)
+    {
+        app.world.entity().set(mas::Transform{}).set(mas::GlobalTransform{});
+    }
+
     app.run();
     return 0;
 }

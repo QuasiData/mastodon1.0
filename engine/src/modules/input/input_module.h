@@ -141,7 +141,7 @@ public:
     ~KeyboardInput() = default;
     KeyboardInput(KeyboardInput&&) = default;
     KeyboardInput& operator=(KeyboardInput&&) = default;
-    DISABLE_COPY(KeyboardInput);
+    DISABLE_COPY(KeyboardInput)
 
     [[nodiscard]] bool pressed(const KeyCode input) const;
 
