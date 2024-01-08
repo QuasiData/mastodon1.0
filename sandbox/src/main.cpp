@@ -1,4 +1,7 @@
+#include <iostream>
+
 #include "engine.h"
+#include "modules/render/render_module.h"
 
 int main()
 {

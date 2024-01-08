@@ -18,6 +18,8 @@ void Renderer::render(flecs::world* w)
     world = w;
 }
 
-void Renderer::add_mesh(std::vector<VertexP3N3U2T4>& vertices, std::vector<VertexIndexType>& indices)
-{}
+void Renderer::add_meshes(const MeshData& mesh_data)
+{
+    
+}
 }

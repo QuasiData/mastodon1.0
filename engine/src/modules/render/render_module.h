@@ -29,6 +29,12 @@ struct VertexP3N3U2T4
     glm::vec3 normal;
 };
 
+struct MeshData
+{
+    std::vector<VertexP3N3U2T4> vertices{};
+    std::vector<VertexIndexType> indices{};
+};
+
 class Renderer
 {
 public:
@@ -38,7 +44,7 @@ public:
 
     virtual void render(flecs::world* world) = 0;
 
-    virtual void add_mesh(std::vector<VertexP3N3U2T4>& vertices, std::vector<VertexIndexType>& indices) = 0;
+    virtual void add_meshes(const MeshData& mesh_data) = 0;
 };
 }
 

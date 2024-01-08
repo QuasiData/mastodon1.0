@@ -12,7 +12,7 @@ public:
     DISABLE_COPY_AND_MOVE(Renderer)
 
     void render(flecs::world* w) override;
-    void add_mesh(std::vector<VertexP3N3U2T4>& vertices, std::vector<VertexIndexType>& indices) override;
+    void add_meshes(const MeshData& mesh_data) override;
 
 private:
     Context context;

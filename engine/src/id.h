@@ -68,12 +68,12 @@ private:
     IdType id_;
 };
 }
+}
 
 #define DEFINE_TYPED_ID(name)								                                    \
-	struct name##_id final : mas::id::details::id_base				                            \
+	struct name##Id final : mas::id::details::IdBase				                            \
 	{														                                    \
-		constexpr explicit name##_id(const mas::id::id_type id)		                            \
-			: mas::id::details::id_base {id} {}                                                 \
-		constexpr name##_id() : mas::id::details::id_base{ mas::id::invalid_id } {}	            \
+		constexpr explicit name##Id(const mas::id::IdType id)		                            \
+			: mas::id::details::IdBase {id} {}                                                  \
+		constexpr name##Id() : mas::id::details::IdBase{ mas::id::invalid_id } {}	            \
 	};
-}
