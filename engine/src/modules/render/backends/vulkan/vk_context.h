@@ -5,6 +5,7 @@
 #include "vma/vk_mem_alloc.h"
 
 #include <optional>
+#include <vector>
 
 // ReSharper disable once CppInconsistentNaming
 struct GLFWwindow;
@@ -30,10 +31,13 @@ class Context
 {
 public:
     explicit Context(GLFWwindow* w);
+    void destroy();
+    void resize_swapchain();
 
 private:
     static VkInstance create_instance();
     void create_device();
+    void finalize_swapchain();
 
     GLFWwindow* window{ nullptr };
     VkInstance instance{ nullptr };
@@ -43,5 +47,11 @@ private:
     QueueFamilyIndices queue_family_indices{};
     VkQueue graphics_queue{ nullptr };
     VkQueue present_queue{ nullptr };
+    VmaAllocator allocator{ nullptr };
+    VkSwapchainKHR swap_chain{ nullptr };
+    VkSurfaceFormatKHR surface_format{};
+    VkExtent2D surface_extent{};
+    std::vector<VkImage> surface_images{};
+    std::vector<VkImageView> surface_image_views{};
 };
 }

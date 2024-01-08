@@ -19,7 +19,7 @@ constexpr bool enable_validation{ true };
 constexpr bool enable_validation{ true };
 #endif
 
-bool is_device_suitable(const VkPhysicalDevice physical_device, const VkSurfaceKHR surface, const std::vector<const char*>& req_extensions)
+bool is_device_suitable(const VkPhysicalDevice physical_device, const std::vector<const char*>& req_extensions)
 {
     VkPhysicalDeviceProperties2 dp{};
     dp.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
@@ -103,10 +103,62 @@ Context::Context(GLFWwindow* w)
     create_device();
     volkLoadDevice(device);
 
-    // get function pointer for vma
-    // create vma allocator
+    VmaVulkanFunctions vma_vulkan_func{};
+    vma_vulkan_func.vkGetInstanceProcAddr = vkGetInstanceProcAddr;
+    vma_vulkan_func.vkGetDeviceProcAddr = vkGetDeviceProcAddr;
+    vma_vulkan_func.vkAllocateMemory = vkAllocateMemory;
+    vma_vulkan_func.vkBindBufferMemory = vkBindBufferMemory;
+    vma_vulkan_func.vkBindImageMemory = vkBindImageMemory;
+    vma_vulkan_func.vkCreateBuffer = vkCreateBuffer;
+    vma_vulkan_func.vkCreateImage = vkCreateImage;
+    vma_vulkan_func.vkDestroyBuffer = vkDestroyBuffer;
+    vma_vulkan_func.vkDestroyImage = vkDestroyImage;
+    vma_vulkan_func.vkFlushMappedMemoryRanges = vkFlushMappedMemoryRanges;
+    vma_vulkan_func.vkFreeMemory = vkFreeMemory;
+    vma_vulkan_func.vkGetBufferMemoryRequirements = vkGetBufferMemoryRequirements;
+    vma_vulkan_func.vkGetImageMemoryRequirements = vkGetImageMemoryRequirements;
+    vma_vulkan_func.vkGetPhysicalDeviceMemoryProperties = vkGetPhysicalDeviceMemoryProperties;
+    vma_vulkan_func.vkGetPhysicalDeviceProperties = vkGetPhysicalDeviceProperties;
+    vma_vulkan_func.vkInvalidateMappedMemoryRanges = vkInvalidateMappedMemoryRanges;
+    vma_vulkan_func.vkMapMemory = vkMapMemory;
+    vma_vulkan_func.vkUnmapMemory = vkUnmapMemory;
+    vma_vulkan_func.vkCmdCopyBuffer = vkCmdCopyBuffer;
 
-    // create the swap chain
+    VmaAllocatorCreateInfo alloc_ci{};
+    alloc_ci.instance = instance;
+    alloc_ci.device = device;
+    alloc_ci.physicalDevice = phys_device;
+    alloc_ci.vulkanApiVersion = VK_API_VERSION_1_3;
+    alloc_ci.pVulkanFunctions = &vma_vulkan_func;
+
+    vmaCreateAllocator(&alloc_ci, &allocator);
+
+    finalize_swapchain();
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void Context::destroy()
+{
+    for (const auto image_view : surface_image_views)
+        vkDestroyImageView(device, image_view, nullptr);
+
+    vkDestroySwapchainKHR(device, swap_chain, nullptr);
+
+    vkDestroySurfaceKHR(instance, surface, nullptr);
+
+    vmaDestroyAllocator(allocator);
+
+    vkDestroyDevice(device, nullptr);
+
+    if constexpr (enable_validation)
+        debug::shutdown(instance);
+
+    vkDestroyInstance(instance, nullptr);
+}
+
+void Context::resize_swapchain()
+{
+    finalize_swapchain();
 }
 
 VkInstance Context::create_instance()
@@ -196,7 +248,7 @@ void Context::create_device()
     phys_device = physical_devices[0];
     for (usize i{ 0 }; i < physical_devices.size(); ++i)
     {
-        if (is_device_suitable(physical_devices[i], surface, req_extensions))
+        if (is_device_suitable(physical_devices[i], req_extensions))
         {
             VkPhysicalDeviceProperties2 dp{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2 };
             phys_device = physical_devices[i];
@@ -275,5 +327,139 @@ void Context::create_device()
     vkGetDeviceQueue(device, queue_family_indices.graphics_family.value(), 0, &graphics_queue);
     vkGetDeviceQueue(device, queue_family_indices.present_family.value(), 0, &present_queue);
 
+}
+
+void Context::finalize_swapchain()
+{
+    assert(phys_device);
+    assert(device);
+
+    auto old_swap_chain = swap_chain;
+
+    struct SwapChainSupportDetails
+    {
+        VkSurfaceCapabilitiesKHR capabilities{};
+        std::vector<VkSurfaceFormatKHR> formats{};
+        std::vector<VkPresentModeKHR> present_modes{};
+    };
+
+    SwapChainSupportDetails details;
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(phys_device, surface, &details.capabilities);
+
+    u32 format_count{ 0 };
+    vkGetPhysicalDeviceSurfaceFormatsKHR(phys_device, surface, &format_count, nullptr);
+    assert(format_count > 0);
+    details.formats.resize(format_count);
+    vkGetPhysicalDeviceSurfaceFormatsKHR(phys_device, surface, &format_count, details.formats.data());
+
+    u32 present_mode_count{ 0 };
+    vkGetPhysicalDeviceSurfacePresentModesKHR(phys_device, surface, &present_mode_count, nullptr);
+    assert(present_mode_count > 0);
+    details.present_modes.resize(present_mode_count);
+    vkGetPhysicalDeviceSurfacePresentModesKHR(phys_device, surface, &present_mode_count, details.present_modes.data());
+
+    const auto [capabilities, formats, present_modes] = details;
+
+    VkPresentModeKHR present_mode = present_modes[0];
+    assert(!present_modes.empty());
+    for (const auto& mode : present_modes)
+    {
+        if (mode == VK_PRESENT_MODE_IMMEDIATE_KHR)
+            present_mode = mode;
+
+        if (mode == VK_PRESENT_MODE_MAILBOX_KHR)
+            present_mode = mode;
+    }
+
+    assert(!formats.empty());
+    for (const auto& format : formats)
+    {
+        if (format.format == VK_FORMAT_B8G8R8A8_SRGB && format.colorSpace == VK_COLORSPACE_SRGB_NONLINEAR_KHR)
+            surface_format = format;
+    }
+
+    i32 width{ 0 }, height{ 0 };
+    glfwGetFramebufferSize(window, &width, &height);
+
+    VkExtent2D actual_extent = {
+        static_cast<u32>(width),
+        static_cast<u32>(height)
+    };
+
+    actual_extent.width = std::clamp(actual_extent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
+    actual_extent.height = std::clamp(actual_extent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
+
+    surface_extent = actual_extent;
+
+    u32 image_count{ capabilities.minImageCount };
+    if (capabilities.minImageCount <= 2)
+        image_count = 2;
+
+    VkSwapchainCreateInfoKHR c_info{};
+    c_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+    c_info.surface = surface;
+    c_info.minImageCount = image_count;
+    c_info.imageFormat = surface_format.format;
+    c_info.imageColorSpace = surface_format.colorSpace;
+    c_info.imageExtent = surface_extent;
+    c_info.imageArrayLayers = 1;
+    c_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+
+    const auto [graphics_family, present_family] = queue_family_indices;
+    const u32 indices[] = { graphics_family.value(), present_family.value() };
+    if (graphics_family.value() != present_family.value())
+    {
+        c_info.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+        c_info.queueFamilyIndexCount = 2;
+        c_info.pQueueFamilyIndices = indices;
+    }
+    else
+    {
+        c_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        c_info.queueFamilyIndexCount = 0;
+        c_info.pQueueFamilyIndices = nullptr;
+    }
+    c_info.preTransform = capabilities.currentTransform;
+    c_info.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+    c_info.presentMode = present_mode;
+    c_info.clipped = VK_TRUE;
+    c_info.oldSwapchain = old_swap_chain;
+
+    if (vkCreateSwapchainKHR(device, &c_info, nullptr, &swap_chain) != VK_SUCCESS)
+        throw std::runtime_error("Failed to create swap chain!");
+
+    if (old_swap_chain != nullptr)
+    {
+        for (const auto image_view : surface_image_views)
+            vkDestroyImageView(device, image_view, nullptr);
+
+        vkDestroySwapchainKHR(device, old_swap_chain, nullptr);
+    }
+
+    vkGetSwapchainImagesKHR(device, swap_chain, &image_count, nullptr);
+    surface_images.resize(image_count);
+    vkGetSwapchainImagesKHR(device, swap_chain, &image_count, surface_images.data());
+
+    surface_image_views.resize(surface_images.size());
+    for (usize i{ 0 }; i < surface_images.size(); ++i)
+    {
+        VkImageViewCreateInfo create_info{};
+        create_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        create_info.image = surface_images[i];
+        create_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        create_info.format = surface_format.format;
+        create_info.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+        create_info.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+        create_info.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+        create_info.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+        create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        create_info.subresourceRange.baseMipLevel = 0;
+        create_info.subresourceRange.levelCount = 1;
+        create_info.subresourceRange.baseArrayLayer = 0;
+        create_info.subresourceRange.layerCount = 1;
+
+        if (vkCreateImageView(device, &create_info, nullptr, &surface_image_views[i]) != VK_SUCCESS)
+            throw std::runtime_error("Failed to create swap chain image views");
+    }
 }
 }

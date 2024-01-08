@@ -54,5 +54,7 @@ void App::run()
 void App::close()
 {
     spdlog::info("Closing application");
+    world.remove<Renderer>();
+    world.remove<Window>();
 }
 }

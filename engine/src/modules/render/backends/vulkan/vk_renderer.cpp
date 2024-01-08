@@ -2,14 +2,15 @@
 
 namespace mas::gfx::vulkan
 {
-Renderer::Renderer(GLFWwindow* window) : context(Context(window))
+Renderer::Renderer(GLFWwindow* window)
+: context(Context(window))
 {
 
 }
 
 Renderer::~Renderer()
 {
-    
+    context.destroy();
 }
 
 void Renderer::render(flecs::world* w)
