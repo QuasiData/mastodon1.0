@@ -646,7 +646,7 @@
     <ClInclude Include="src\engine.h" />
     <ClInclude Include="src\id.h" />
     <ClInclude Include="src\modules\input\input_module.h" />
-    <ClInclude Include="src\modules\transform_module.h" />
+    <ClInclude Include="src\modules\transform\transform_module.h" />
     <ClInclude Include="src\modules\window\window_module.h" />
     <ClInclude Include="src\primitives.h" />
   </ItemGroup>
@@ -663,6 +663,7 @@
     <ClCompile Include="external\include\volk\volk.c" />
     <ClCompile Include="src\engine.cpp" />
     <ClCompile Include="src\modules\input\input_module.cpp" />
+    <ClCompile Include="src\modules\transform\transform_module.cpp" />
     <ClCompile Include="src\modules\window\window_module.cpp" />
   </ItemGroup>
   <ItemGroup>

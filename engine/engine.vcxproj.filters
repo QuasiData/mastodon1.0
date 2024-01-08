@@ -1512,7 +1512,7 @@
     <ClInclude Include="external\include\fmt\xchar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\modules\transform_module.h">
+    <ClInclude Include="src\modules\transform\transform_module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1554,6 +1554,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\modules\window\window_module.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modules\transform\transform_module.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
