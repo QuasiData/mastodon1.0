@@ -646,6 +646,10 @@
     <ClInclude Include="src\engine.h" />
     <ClInclude Include="src\id.h" />
     <ClInclude Include="src\modules\input\input_module.h" />
+    <ClInclude Include="src\modules\render\backends\vulkan\vk_context.h" />
+    <ClInclude Include="src\modules\render\backends\vulkan\vk_debug.h" />
+    <ClInclude Include="src\modules\render\backends\vulkan\vk_renderer.h" />
+    <ClInclude Include="src\modules\render\render_module.h" />
     <ClInclude Include="src\modules\transform\transform_module.h" />
     <ClInclude Include="src\modules\window\window_module.h" />
     <ClInclude Include="src\primitives.h" />
@@ -663,6 +667,10 @@
     <ClCompile Include="external\include\volk\volk.c" />
     <ClCompile Include="src\engine.cpp" />
     <ClCompile Include="src\modules\input\input_module.cpp" />
+    <ClCompile Include="src\modules\render\backends\vulkan\vk_context.cpp" />
+    <ClCompile Include="src\modules\render\backends\vulkan\vk_debug.cpp" />
+    <ClCompile Include="src\modules\render\backends\vulkan\vk_renderer.cpp" />
+    <ClCompile Include="src\modules\render\render_module.cpp" />
     <ClCompile Include="src\modules\transform\transform_module.cpp" />
     <ClCompile Include="src\modules\window\window_module.cpp" />
   </ItemGroup>

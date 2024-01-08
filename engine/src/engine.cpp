@@ -1,7 +1,11 @@
 #include "engine.h"
 #include "modules/input/input_module.h"
+#include "modules/render/render_module.h"
 
 #include "spdlog/spdlog.h"
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#define GLM_FORCE_RADIANS
+#include "glm/glm.hpp"
 
 #include <chrono>
 
@@ -10,8 +14,10 @@ namespace mas
 App::App(const AppSettings& settings)
 {
     // Import all modules
+    world.import<TransformModule>();
     world.import<WindowModule>();
     world.import<InputModule>();
+    world.import<RenderModule>();
 
     // Init resources
     world.set(Window{});
@@ -19,6 +25,7 @@ App::App(const AppSettings& settings)
 
     world.set(KeyboardInput{});
     world.set(MouseInput{});
+
 }
 
 void App::run()
