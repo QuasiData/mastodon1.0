@@ -18,9 +18,9 @@ public:
     flecs::world world{};
     explicit App(const AppSettings& settings);
 
-    void run();
+    void run() const;
 
 private:
-    void close();
+    void close() const;
 };
 }

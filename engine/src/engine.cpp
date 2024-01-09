@@ -39,7 +39,7 @@ App::App(const AppSettings& settings)
     world.get_mut<AssetLoader>()->inject_renderer(*world.get_mut<Renderer>());
 }
 
-void App::run()
+void App::run() const
 {
     spdlog::info("Application launching");
     f32 frame_time{ 0 };
@@ -69,9 +69,10 @@ void App::run()
     close();
 }
 
-void App::close()
+void App::close() const
 {
     spdlog::info("Closing application");
+    world.remove<AssetLoader>();
     world.remove<Renderer>();
     world.remove<Window>();
 }
