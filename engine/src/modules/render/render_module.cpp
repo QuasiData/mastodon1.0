@@ -13,6 +13,8 @@ RenderModule::RenderModule(flecs::world& world)
 
     world.import<WindowModule>();
 
+    // TODO: System OnLoad that starts a new frame for UI rendering this frame
+
     world.system<Renderer>("Render system")
         .term_at(1).singleton()
         .kind(flecs::OnStore)
