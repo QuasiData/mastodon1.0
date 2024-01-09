@@ -649,6 +649,10 @@
     <ClInclude Include="src\modules\asset\asset_loader.h" />
     <ClInclude Include="src\modules\asset\tangents.h" />
     <ClInclude Include="src\modules\input\input_module.h" />
+    <ClInclude Include="src\modules\render\backends\vulkan\resources\vk_buffer.h" />
+    <ClInclude Include="src\modules\render\backends\vulkan\resources\vk_resource_manager.h" />
+    <ClInclude Include="src\modules\render\backends\vulkan\resources\vk_texture.h" />
+    <ClInclude Include="src\modules\render\backends\vulkan\vk_command.h" />
     <ClInclude Include="src\modules\render\backends\vulkan\vk_context.h" />
     <ClInclude Include="src\modules\render\backends\vulkan\vk_debug.h" />
     <ClInclude Include="src\modules\render\backends\vulkan\vk_renderer.h" />
@@ -673,6 +677,10 @@
     <ClCompile Include="src\modules\asset\asset_loader.cpp" />
     <ClCompile Include="src\modules\asset\tangents.cpp" />
     <ClCompile Include="src\modules\input\input_module.cpp" />
+    <ClCompile Include="src\modules\render\backends\vulkan\resources\vk_buffer.cpp" />
+    <ClCompile Include="src\modules\render\backends\vulkan\resources\vk_resource_manager.cpp" />
+    <ClCompile Include="src\modules\render\backends\vulkan\resources\vk_texture.cpp" />
+    <ClCompile Include="src\modules\render\backends\vulkan\vk_command.cpp" />
     <ClCompile Include="src\modules\render\backends\vulkan\vk_context.cpp" />
     <ClCompile Include="src\modules\render\backends\vulkan\vk_debug.cpp" />
     <ClCompile Include="src\modules\render\backends\vulkan\vk_renderer.cpp" />

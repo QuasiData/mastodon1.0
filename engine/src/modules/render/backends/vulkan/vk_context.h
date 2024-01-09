@@ -6,6 +6,7 @@
 
 #include <optional>
 #include <vector>
+#include <memory>
 
 // ReSharper disable once CppInconsistentNaming
 struct GLFWwindow;
@@ -32,9 +33,9 @@ class Context
 public:
     explicit Context(GLFWwindow* w);
 
-    void destroy();
-
     void resize_swapchain();
+
+    void destroy();
 
 private:
     static VkInstance create_instance();
@@ -43,6 +44,7 @@ private:
 
     void finalize_swapchain();
 
+public:
     GLFWwindow* window{ nullptr };
     VkInstance instance{ nullptr };
     VkSurfaceKHR surface{ nullptr };

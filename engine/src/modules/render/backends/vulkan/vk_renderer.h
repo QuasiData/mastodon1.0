@@ -16,7 +16,7 @@ public:
     void add_models(std::vector<std::tuple<Model, gfx::MeshData, gfx::MaterialData>> model_data) override;
 
 private:
-    Context context;
+    std::shared_ptr<Context> context;
     flecs::world* world{ nullptr };
 };
 }

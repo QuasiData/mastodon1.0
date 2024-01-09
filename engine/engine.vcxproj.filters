@@ -1536,6 +1536,18 @@
     <ClInclude Include="external\include\mikkt\mikktspace.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\modules\render\backends\vulkan\resources\vk_resource_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modules\render\backends\vulkan\resources\vk_buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modules\render\backends\vulkan\resources\vk_texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modules\render\backends\vulkan\vk_command.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\engine.cpp">
@@ -1599,6 +1611,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\modules\asset\tangents.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modules\render\backends\vulkan\resources\vk_resource_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modules\render\backends\vulkan\resources\vk_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modules\render\backends\vulkan\resources\vk_texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modules\render\backends\vulkan\vk_command.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
