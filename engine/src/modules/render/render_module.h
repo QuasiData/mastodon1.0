@@ -10,6 +10,7 @@
 namespace mas
 {
 DEFINE_TYPED_ID(Mesh)
+
 DEFINE_TYPED_ID(Material)
 
 struct Model
@@ -36,6 +37,8 @@ struct VertexP3N3U2T4
 {
     glm::vec3 pos;
     glm::vec3 normal;
+    glm::vec2 uv;
+    glm::vec4 tangent;
 };
 
 struct MeshData
@@ -59,8 +62,9 @@ enum class MaterialFlag
     Normal = 0b0010,
     MetallicRoughness = 0b0100,
     Emissive = 0b1000,
-
 };
+
+IMPLEMENT_TYPED_BITFLAG_OPERATORS(MaterialFlag);
 
 struct MaterialData
 {

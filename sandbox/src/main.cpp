@@ -7,7 +7,7 @@
 int main()
 {
     const auto settings = mas::AppSettings{
-        .window_settings = mas::WindowSettings {
+        .window_settings = mas::WindowSettings{
             .width = 1920,
             .height = 1080,
             .title = "Mastodon Engine"
@@ -25,9 +25,10 @@ int main()
         .term_at(1).singleton()
         .each([](mas::AssetLoader& al)
               {
-                  al.loaf_glb("./assets/DamagedHelmet.glb");
+                  al.load_glb("./assets/DamagedHelmet.glb");
+                  al.load_glb("./assets/BarramundiFish.glb");
               });
 
-        app.run();
-        return 0;
+    app.run();
+    return 0;
 }

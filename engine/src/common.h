@@ -20,3 +20,39 @@
 #else
 #define DEBUG_OP(x) (void(0))
 #endif
+
+#define IMPLEMENT_TYPED_BITFLAG_OPERATORS(name)																											\
+inline name operator~(name a)																															\
+{																																						\
+	return static_cast<name>(~static_cast<std::underlying_type_t<name>>(a));																			\
+}																																						\
+                                                                                                                                                        \
+inline name operator&(name a, name b)																													\
+{																																						\
+	return static_cast<name>(static_cast<std::underlying_type_t<name>>(a) & static_cast<std::underlying_type_t<name>>(b));								\
+}																																						\
+																																						\
+inline name& operator&=(name& a, const name b)																											\
+{																																						\
+	return a = a & b;																																	\
+}																																						\
+																																						\
+inline name operator|(name a, name b)																													\
+{																																						\
+	return static_cast<name>(static_cast<std::underlying_type_t<name>>(a) | static_cast<std::underlying_type_t<name>>(b));								\
+}																																						\
+																																						\
+inline name& operator|=(name& a, const name b)																											\
+{																																						\
+	return a = a | b;																																	\
+}																																						\
+																																						\
+inline name operator-(name a, name b)																													\
+{																																						\
+	return static_cast<name>(static_cast<std::underlying_type_t<name>>(a) - static_cast<std::underlying_type_t<name>>(b));								\
+}																																						\
+																																						\
+inline name& operator-=(name& a, const name b)																											\
+{																																						\
+	return a = a - b;																																	\
+}

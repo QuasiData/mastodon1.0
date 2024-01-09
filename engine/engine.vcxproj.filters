@@ -1530,6 +1530,12 @@
     <ClInclude Include="src\modules\asset\asset_loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\modules\asset\tangents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\include\mikkt\mikktspace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\engine.cpp">
@@ -1587,6 +1593,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\modules\asset\asset_loader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="external\include\mikkt\mikktspace.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modules\asset\tangents.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

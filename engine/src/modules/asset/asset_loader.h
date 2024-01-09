@@ -22,7 +22,7 @@ public:
 
     Model load_gltf(const std::string& path);
 
-    Model loaf_glb(const std::string& path);
+    Model load_glb(const std::string& path);
 
 private:
     void upload_all();

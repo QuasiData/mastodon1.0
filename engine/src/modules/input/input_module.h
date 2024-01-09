@@ -45,40 +45,7 @@ enum class KeyCode : u64
     Esc = 0b0000000000000000000000000000000001000000000000000000000000000000,
 };
 
-inline KeyCode operator~(KeyCode a)
-{
-    return static_cast<KeyCode>(~static_cast<std::underlying_type_t<KeyCode>>(a));
-}
-
-inline KeyCode operator&(KeyCode a, KeyCode b)
-{
-    return static_cast<KeyCode>(static_cast<std::underlying_type_t<KeyCode>>(a) & static_cast<std::underlying_type_t<KeyCode>>(b));
-}
-
-inline KeyCode& operator&=(KeyCode& a, const KeyCode b)
-{
-    return a = a & b;
-}
-
-inline KeyCode operator|(KeyCode a, KeyCode b)
-{
-    return static_cast<KeyCode>(static_cast<std::underlying_type_t<KeyCode>>(a) | static_cast<std::underlying_type_t<KeyCode>>(b));
-}
-
-inline KeyCode& operator|=(KeyCode& a, const KeyCode b)
-{
-    return a = a | b;
-}
-
-inline KeyCode operator-(KeyCode a, KeyCode b)
-{
-    return static_cast<KeyCode>(static_cast<std::underlying_type_t<KeyCode>>(a) - static_cast<std::underlying_type_t<KeyCode>>(b));
-}
-
-inline KeyCode& operator-=(KeyCode& a, const KeyCode b)
-{
-    return a = a - b;
-}
+IMPLEMENT_TYPED_BITFLAG_OPERATORS(KeyCode);
 
 enum class MouseButton : u64
 {
@@ -90,40 +57,7 @@ enum class MouseButton : u64
     MouseButton5 = 0b0000000000000000000000000000000000000000000000000000000000100000,
 };
 
-inline MouseButton operator~(MouseButton a)
-{
-    return static_cast<MouseButton>(~static_cast<std::underlying_type_t<MouseButton>>(a));
-}
-
-inline MouseButton operator&(MouseButton a, MouseButton b)
-{
-    return static_cast<MouseButton>(static_cast<std::underlying_type_t<MouseButton>>(a) & static_cast<std::underlying_type_t<MouseButton>>(b));
-}
-
-inline MouseButton& operator&=(MouseButton& a, const MouseButton b)
-{
-    return a = a & b;
-}
-
-inline MouseButton operator|(MouseButton a, MouseButton b)
-{
-    return static_cast<MouseButton>(static_cast<std::underlying_type_t<MouseButton>>(a) | static_cast<std::underlying_type_t<MouseButton>>(b));
-}
-
-inline MouseButton& operator|=(MouseButton& a, const MouseButton b)
-{
-    return a = a | b;
-}
-
-inline MouseButton operator-(MouseButton a, MouseButton b)
-{
-    return static_cast<MouseButton>(static_cast<std::underlying_type_t<MouseButton>>(a) - static_cast<std::underlying_type_t<MouseButton>>(b));
-}
-
-inline MouseButton& operator-=(MouseButton& a, const MouseButton b)
-{
-    return a = a - b;
-}
+IMPLEMENT_TYPED_BITFLAG_OPERATORS(MouseButton);
 
 class KeyboardInput
 {
