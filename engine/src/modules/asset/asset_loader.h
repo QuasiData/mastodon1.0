@@ -4,27 +4,39 @@
 
 #include <unordered_map>
 #include <string>
+#include <mutex>
 
 namespace mas
 {
-DEFINE_TYPED_ID(Mesh)
-DEFINE_TYPED_ID(Material)
-
-struct Model
-{
-    MeshId mesh_id;
-    MaterialId material_id;
-};
+class App;
 
 class AssetLoader
 {
+    friend class App;
 public:
     AssetLoader() = default;
     ~AssetLoader() = default;
-    DISABLE_COPY_AND_MOVE(AssetLoader)
+    AssetLoader(AssetLoader&&) noexcept;
+    AssetLoader& operator=(AssetLoader&&) noexcept;
+    DISABLE_COPY(AssetLoader)
+
+    Model load_gltf(const std::string& path);
+
+    Model loaf_glb(const std::string& path);
 
 private:
-    std::vector<std::string> models_to_load{};
-    std::vector<gfx::MeshData> mesh_data{};
+    void upload_all();
+
+    void inject_renderer(Renderer r);
+
+    Renderer renderer{ nullptr };
+    bool startup{ true };
+    usize model_count{ 0 };
+    std::hash<std::string> string_hasher{};
+    std::unordered_map<usize, Model> models{};
+    std::vector<std::pair<std::string, Model>> ascii_models_to_load{};
+    std::vector<std::pair<std::string, Model>> binary_models_to_load{};
+    std::mutex mutex{};
+    std::vector<std::tuple<Model, gfx::MeshData, gfx::MaterialData>> model_data{};
 };
 }

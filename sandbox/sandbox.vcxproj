@@ -148,6 +148,9 @@
       <Project>{440dbfe9-2cdc-4fc5-b4fa-4592792fa942}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\DamagedHelmet.glb" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

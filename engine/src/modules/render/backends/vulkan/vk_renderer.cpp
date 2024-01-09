@@ -18,8 +18,8 @@ void Renderer::render(flecs::world* w)
     world = w;
 }
 
-void Renderer::add_meshes(const MeshData& mesh_data)
+void Renderer::add_models(std::vector<std::tuple<Model, gfx::MeshData, gfx::MaterialData>> model_data)
 {
-    
+
 }
 }

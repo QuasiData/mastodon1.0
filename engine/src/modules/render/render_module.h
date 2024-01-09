@@ -9,6 +9,15 @@
 
 namespace mas
 {
+DEFINE_TYPED_ID(Mesh)
+DEFINE_TYPED_ID(Material)
+
+struct Model
+{
+    MeshId mesh_id;
+    MaterialId material_id;
+};
+
 namespace gfx
 {
 struct Camera
@@ -35,6 +44,33 @@ struct MeshData
     std::vector<VertexIndexType> indices{};
 };
 
+struct TextureData
+{
+    u32 width{ 0 };
+    u32 height{ 0 };
+    u32 channels{ 0 };
+    std::vector<u8> data{};
+};
+
+enum class MaterialFlag
+{
+    None = 0b0000,
+    Albedo = 0b0001,
+    Normal = 0b0010,
+    MetallicRoughness = 0b0100,
+    Emissive = 0b1000,
+
+};
+
+struct MaterialData
+{
+    MaterialFlag present{ MaterialFlag::None };
+    TextureData albedo{};
+    TextureData normals{};
+    TextureData metallic_roughness{};
+    TextureData emissive{};
+};
+
 class Renderer
 {
 public:
@@ -44,7 +80,7 @@ public:
 
     virtual void render(flecs::world* world) = 0;
 
-    virtual void add_meshes(const MeshData& mesh_data) = 0;
+    virtual void add_models(std::vector<std::tuple<Model, gfx::MeshData, gfx::MaterialData>> model_data) = 0;
 };
 }
 

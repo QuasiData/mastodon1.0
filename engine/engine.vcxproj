@@ -646,7 +646,6 @@
     <ClInclude Include="src\engine.h" />
     <ClInclude Include="src\id.h" />
     <ClInclude Include="src\modules\asset\asset_loader.h" />
-    <ClInclude Include="src\modules\asset\asset_module.h" />
     <ClInclude Include="src\modules\input\input_module.h" />
     <ClInclude Include="src\modules\render\backends\vulkan\vk_context.h" />
     <ClInclude Include="src\modules\render\backends\vulkan\vk_debug.h" />
@@ -669,7 +668,6 @@
     <ClCompile Include="external\include\volk\volk.c" />
     <ClCompile Include="src\engine.cpp" />
     <ClCompile Include="src\modules\asset\asset_loader.cpp" />
-    <ClCompile Include="src\modules\asset\asset_module.cpp" />
     <ClCompile Include="src\modules\input\input_module.cpp" />
     <ClCompile Include="src\modules\render\backends\vulkan\vk_context.cpp" />
     <ClCompile Include="src\modules\render\backends\vulkan\vk_debug.cpp" />

@@ -13,7 +13,7 @@ public:
 
     void render(flecs::world* w) override;
 
-    void add_meshes(const MeshData& mesh_data) override;
+    void add_models(std::vector<std::tuple<Model, gfx::MeshData, gfx::MaterialData>> model_data) override;
 
 private:
     Context context;

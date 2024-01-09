@@ -1,6 +1,7 @@
 #include "engine.h"
 #include "modules/input/input_module.h"
 #include "modules/render/render_module.h"
+#include "modules/asset/asset_loader.h"
 #include "modules/render/backends/vulkan/vk_renderer.h"
 
 #include "spdlog/spdlog.h"
@@ -33,6 +34,9 @@ App::App(const AppSettings& settings)
     world.set(MouseInput{});
 
     world.set<Renderer>(std::make_shared<gfx::vulkan::Renderer>(world.get<Window>()->get_raw_window()));
+    world.set(AssetLoader{});
+
+    world.get_mut<AssetLoader>()->inject_renderer(*world.get_mut<Renderer>());
 }
 
 void App::run()
@@ -41,6 +45,7 @@ void App::run()
     f32 frame_time{ 0 };
     const auto window = world.get<Window>();
 
+    bool startup{ true };
     while(!window->should_close())
     {
         const auto start_time = std::chrono::high_resolution_clock::now();
@@ -48,6 +53,14 @@ void App::run()
 
         if (!world.progress(frame_time))
             spdlog::error("Failed to progress world");
+
+        if (startup)
+        {
+            const auto asset_loader = world.get_mut<AssetLoader>();
+            asset_loader->upload_all();
+            asset_loader->startup = false;
+            startup = false;
+        }
 
         const auto end_time = std::chrono::high_resolution_clock::now();
         frame_time = std::chrono::duration<f32>(end_time - start_time).count();

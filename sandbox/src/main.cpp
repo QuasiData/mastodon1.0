@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "engine.h"
+#include "modules/asset/asset_loader.h"
 #include "modules/render/render_module.h"
 
 int main()
@@ -14,11 +15,19 @@ int main()
     };
     auto app = mas::App(settings);
 
-    for (usize i{ 0 }; i < 10000000; ++i)
+    for (usize i{ 0 }; i < 100; ++i)
     {
         app.world.entity().set(mas::Transform{}).set(mas::GlobalTransform{});
     }
 
-    app.run();
-    return 0;
+    app.world.system<mas::AssetLoader>()
+        .kind(flecs::OnStart)
+        .term_at(1).singleton()
+        .each([](mas::AssetLoader& al)
+              {
+                  al.loaf_glb("./assets/DamagedHelmet.glb");
+              });
+
+        app.run();
+        return 0;
 }
