@@ -260,8 +260,8 @@ void load(std::string path, const bool binary, gfx::MeshData& mesh_data, gfx::Ma
             if (albedo_index != -1)
             {
                 material_data.albedo.data = std::move(model.images[albedo_index].image);
-                material_data.albedo.width = static_cast<u32>(model.images[albedo_index].width);
-                material_data.albedo.height = static_cast<u32>(model.images[albedo_index].height);
+                material_data.albedo.width = static_cast<usize>(model.images[albedo_index].width);
+                material_data.albedo.height = static_cast<usize>(model.images[albedo_index].height);
                 material_data.albedo.channels = 4;
                 material_data.present |= gfx::MaterialFlag::Albedo;
             }
@@ -274,8 +274,8 @@ void load(std::string path, const bool binary, gfx::MeshData& mesh_data, gfx::Ma
             if (normal_index != -1)
             {
                 material_data.normals.data = std::move(model.images[normal_index].image);
-                material_data.normals.width = static_cast<u32>(model.images[normal_index].width);
-                material_data.normals.height = static_cast<u32>(model.images[normal_index].height);
+                material_data.normals.width = static_cast<usize>(model.images[normal_index].width);
+                material_data.normals.height = static_cast<usize>(model.images[normal_index].height);
                 material_data.normals.channels = 4;
                 material_data.present |= gfx::MaterialFlag::Normal;
             }
@@ -288,8 +288,8 @@ void load(std::string path, const bool binary, gfx::MeshData& mesh_data, gfx::Ma
             if (metallic_roughness_index != -1)
             {
                 material_data.metallic_roughness.data = std::move(model.images[metallic_roughness_index].image);
-                material_data.metallic_roughness.width = static_cast<u32>(model.images[metallic_roughness_index].width);
-                material_data.metallic_roughness.height = static_cast<u32>(model.images[metallic_roughness_index].height);
+                material_data.metallic_roughness.width = static_cast<usize>(model.images[metallic_roughness_index].width);
+                material_data.metallic_roughness.height = static_cast<usize>(model.images[metallic_roughness_index].height);
                 material_data.metallic_roughness.channels = 4;
                 material_data.present |= gfx::MaterialFlag::MetallicRoughness;
             }
@@ -302,8 +302,8 @@ void load(std::string path, const bool binary, gfx::MeshData& mesh_data, gfx::Ma
             if (emissive_index != -1)
             {
                 material_data.emissive.data = std::move(model.images[emissive_index].image);
-                material_data.emissive.width = static_cast<u32>(model.images[emissive_index].width);
-                material_data.emissive.height = static_cast<u32>(model.images[emissive_index].height);
+                material_data.emissive.width = static_cast<usize>(model.images[emissive_index].width);
+                material_data.emissive.height = static_cast<usize>(model.images[emissive_index].height);
                 material_data.emissive.channels = 4;
                 material_data.present |= gfx::MaterialFlag::Emissive;
             }

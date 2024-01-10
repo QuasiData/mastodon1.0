@@ -49,9 +49,9 @@ struct MeshData
 
 struct TextureData
 {
-    u32 width{ 0 };
-    u32 height{ 0 };
-    u32 channels{ 0 };
+    usize width{ 0 };
+    usize height{ 0 };
+    usize channels{ 0 };
     std::vector<u8> data{};
 };
 

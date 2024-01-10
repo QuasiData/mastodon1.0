@@ -641,6 +641,10 @@
     <ClInclude Include="external\include\taskflow\utility\stream.hpp" />
     <ClInclude Include="external\include\taskflow\utility\traits.hpp" />
     <ClInclude Include="external\include\taskflow\utility\uuid.hpp" />
+    <ClInclude Include="external\include\tiny_gltf\json.hpp" />
+    <ClInclude Include="external\include\tiny_gltf\stb_image.h" />
+    <ClInclude Include="external\include\tiny_gltf\stb_image_write.h" />
+    <ClInclude Include="external\include\tiny_gltf\tiny_gltf.h" />
     <ClInclude Include="external\include\vma\vk_mem_alloc.h" />
     <ClInclude Include="external\include\volk\volk.h" />
     <ClInclude Include="src\common.h" />

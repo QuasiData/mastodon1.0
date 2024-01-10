@@ -1,6 +1,5 @@
 #pragma once
 #include "vk_context.h"
-#include "modules/render/render_module.h"
 
 namespace mas::gfx::vulkan
 {

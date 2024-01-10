@@ -1548,6 +1548,18 @@
     <ClInclude Include="src\modules\render\backends\vulkan\vk_command.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="external\include\tiny_gltf\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\include\tiny_gltf\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\include\tiny_gltf\stb_image_write.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\include\tiny_gltf\tiny_gltf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\engine.cpp">

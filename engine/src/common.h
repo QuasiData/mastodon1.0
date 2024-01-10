@@ -1,3 +1,4 @@
+// ReSharper disable CppClangTidyBugproneMacroParentheses
 #pragma once
 #include "id.h"
 

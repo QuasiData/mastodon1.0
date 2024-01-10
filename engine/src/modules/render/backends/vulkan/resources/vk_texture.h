@@ -3,6 +3,8 @@
 
 namespace mas::gfx::vulkan
 {
+DEFINE_TYPED_ID(Texture)
+
 class Texture
 {
 public:
@@ -30,6 +32,8 @@ public:
 
 private:
     std::shared_ptr<Context> context{ nullptr };
+
+public:
     VkImage image{ nullptr };
     VkImageView image_view{ nullptr };
     VkSampler sampler{ nullptr };

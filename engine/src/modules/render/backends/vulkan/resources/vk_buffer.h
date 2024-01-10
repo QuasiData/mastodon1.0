@@ -3,6 +3,8 @@
 
 namespace mas::gfx::vulkan
 {
+DEFINE_TYPED_ID(Buffer)
+
 class Buffer
 {
 public:
@@ -15,8 +17,11 @@ public:
     Buffer(std::shared_ptr<Context> c, VkDeviceSize size, VkBufferUsageFlags usage_flags, VmaAllocationCreateFlags allocation_flags, const void* data);
 
     void copy_from(const Buffer& src);
+
 private:
     std::shared_ptr<Context> context{ nullptr };
+
+public:
     VkBuffer buffer{ nullptr };
     VmaAllocation allocation{ nullptr };
     VmaAllocationInfo allocation_info;
