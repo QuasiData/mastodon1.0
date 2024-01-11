@@ -57,6 +57,7 @@ Command::Command(std::shared_ptr<Context> c, const VkQueue q, const u32 queue_fa
 
 VkCommandBuffer Command::begin(const u32 index) const
 {
+    vkResetCommandBuffer(command_buffers[index], 0);
     assert(index < command_buffers.size());
 
     VkCommandBufferBeginInfo begin_info{};
