@@ -25,8 +25,11 @@ int main()
         .term_at(1).singleton()
         .each([](mas::AssetLoader& al)
               {
-                  al.load_glb("./assets/DamagedHelmet.glb");
-                  al.load_glb("./assets/BarramundiFish.glb");
+                  for (usize i{ 0 }; i < 1; ++i)
+                  {
+                      al.load_glb("./assets/DamagedHelmet.glb");
+                      al.load_glb("./assets/BarramundiFish.glb");
+                  }
               });
 
     app.run();

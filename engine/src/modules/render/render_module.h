@@ -84,7 +84,7 @@ public:
 
     virtual void render(flecs::world* world) = 0;
 
-    virtual void add_models(std::vector<std::tuple<Model, gfx::MeshData, gfx::MaterialData>> model_data) = 0;
+    virtual void add_models(const std::vector<std::tuple<Model, gfx::MeshData, gfx::MaterialData>>& model_data) = 0;
 };
 }
 

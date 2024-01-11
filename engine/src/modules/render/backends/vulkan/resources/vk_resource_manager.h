@@ -26,7 +26,7 @@ class ResourceManager
 {
 public:
     ResourceManager() = delete;
-    ~ResourceManager();
+    ~ResourceManager() = default;
     DISABLE_COPY_AND_MOVE(ResourceManager)
     explicit ResourceManager(std::shared_ptr<Context> c);
 
@@ -41,10 +41,10 @@ private:
     id::IdType next_buffer_id{ 0 };
     id::IdType next_text_id{ 0 };
 
-    std::unordered_map<MeshId, MeshEntry> mesh_registry{};
-    std::unordered_map<MaterialId, MaterialEntry> material_registry{};
+    std::unordered_map<id::IdType, MeshEntry> mesh_registry{};
+    std::unordered_map<id::IdType, MaterialEntry> material_registry{};
 
-    std::unordered_map<BufferId, Buffer> buffer_map{};
-    std::unordered_map<TextureId, Texture> texture_map{};
+    std::unordered_map<id::IdType, Buffer> buffer_map{};
+    std::unordered_map<id::IdType, Texture> texture_map{};
 };
 }

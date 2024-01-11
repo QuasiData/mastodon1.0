@@ -20,10 +20,12 @@ Buffer::Buffer(Buffer&& other) noexcept
 
 Buffer& Buffer::operator=(Buffer&& other) noexcept
 {
+    this->context = other.context;
     this->buffer = other.buffer;
     this->allocation = other.allocation;
     this->allocation_info = other.allocation_info;
 
+    other.context = nullptr;
     other.buffer = nullptr;
     other.allocation = nullptr;
     other.allocation_info = VmaAllocationInfo{};

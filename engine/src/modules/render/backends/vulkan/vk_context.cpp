@@ -136,8 +136,7 @@ Context::Context(GLFWwindow* w)
     finalize_swapchain();
 }
 
-// ReSharper disable once CppMemberFunctionMayBeConst
-void Context::destroy()
+Context::~Context()
 {
     for (const auto image_view : surface_image_views)
         vkDestroyImageView(device, image_view, nullptr);

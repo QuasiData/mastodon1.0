@@ -12,13 +12,25 @@ namespace mas::gfx::vulkan
 Texture::~Texture()
 {
     if (image)
+    {
         vmaDestroyImage(context->allocator, image, allocation);
+        image = nullptr;
+    }
 
     if (image_view)
+    {
         vkDestroyImageView(context->device, image_view, nullptr);
+        image_view = nullptr;
+    }
 
     if (sampler)
+    {
         vkDestroySampler(context->device, sampler, nullptr);
+        sampler = nullptr;
+    }
+
+    allocation = nullptr;
+    context = nullptr;
 }
 
 Texture::Texture(Texture&& other) noexcept

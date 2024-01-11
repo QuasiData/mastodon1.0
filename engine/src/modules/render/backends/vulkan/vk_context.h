@@ -14,6 +14,8 @@ struct GLFWwindow;
 
 namespace mas::gfx::vulkan
 {
+constexpr u32 back_buffer_count{ 2 };
+
 struct QueueFamilyIndices
 {
     std::optional<u32> graphics_family = std::nullopt;
@@ -33,10 +35,10 @@ class Context
 {
 public:
     explicit Context(GLFWwindow* w);
+    ~Context();
+    DISABLE_COPY_AND_MOVE(Context)
 
     void resize_swapchain();
-
-    void destroy();
 
 private:
     static VkInstance create_instance();
