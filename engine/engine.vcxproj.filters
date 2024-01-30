@@ -1617,6 +1617,9 @@
     <ClInclude Include="src\modules\render\backends\vulkan\render_graph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\modules\render\backends\vulkan\shaders\test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\engine.cpp">
@@ -1731,6 +1734,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="external\include\spirv_cross\spirv_reflect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modules\render\backends\vulkan\shaders\test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

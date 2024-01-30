@@ -10,6 +10,7 @@ namespace mas::gfx::vulkan
 Renderer::Renderer(GLFWwindow* window)
     : context(std::make_shared<Context>(window)),
     resource_manager(context),
+    render_graph(context),
     ui_overlay(context),
     draw_command(Command(context, context->graphics_queue, context->queue_family_indices.graphics_family.value(), back_buffer_count))
 {

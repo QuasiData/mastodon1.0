@@ -1,6 +1,7 @@
 #pragma once
 #include "vk_context.h"
 #include "vk_ui.h"
+#include "render_graph.h"
 #include "resources/vk_resource_manager.h"
 
 namespace mas::gfx::vulkan
@@ -22,6 +23,7 @@ private:
     std::shared_ptr<Context> context;
     flecs::world* world{ nullptr };
     ResourceManager resource_manager;
+    RenderGraph render_graph;
     UiOverlay ui_overlay;
     Command draw_command;
     u32 current_frame{ 0 };
