@@ -1,6 +1,7 @@
 #include "vk_renderer.h"
 
 #include "imgui/imgui.h"
+#include "spdlog/spdlog.h"
 
 #include <stdexcept>
 
@@ -65,12 +66,11 @@ void Renderer::render(flecs::world* w)
     vkWaitForFences(context->device, 1, &fr, VK_TRUE, std::numeric_limits<u64>::max());
 
     u32 image_index{ 0 };
-    const auto result = vkAcquireNextImageKHR(
+
+    if (const auto result = vkAcquireNextImageKHR(
         context->device, context->swap_chain,
         100, image_available_semaphores[current_frame],
-        VK_NULL_HANDLE, &image_index);
-
-    if (result != VK_SUCCESS)
+        VK_NULL_HANDLE, &image_index); result != VK_SUCCESS)
     {
         vkDeviceWaitIdle(context->device);
         context->resize_swapchain();

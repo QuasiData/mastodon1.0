@@ -56,8 +56,7 @@ Buffer::Buffer(std::shared_ptr<Context> c, const VkDeviceSize size, const VkBuff
     }
 }
 
-Buffer::Buffer(std::shared_ptr<Context> c, const VkDeviceSize size, const VkBufferUsageFlags usage_flags, const VmaAllocationCreateFlags allocation_flags,
-               const void* data)
+Buffer::Buffer(std::shared_ptr<Context> c, const VkDeviceSize size, const VkBufferUsageFlags usage_flags, const void* data, const VmaAllocationCreateFlags allocation_flags)
 {
     context = std::move(c);
 
@@ -100,5 +99,19 @@ void Buffer::copy_from(const Buffer& src)
     const auto cmd = command.begin();
     vkCmdCopyBuffer2(cmd, &copy_info);
     command.flush();
+}
+
+void Buffer::set_debug_name(const std::string& name)
+{
+    if constexpr (enable_validation)
+    {
+        auto name_info = VkDebugUtilsObjectNameInfoEXT{};
+        name_info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
+        name_info.objectHandle = reinterpret_cast<u64>(buffer);
+        name_info.objectType = VK_OBJECT_TYPE_BUFFER;
+        name_info.pObjectName = name.c_str();
+
+        vkSetDebugUtilsObjectNameEXT(context->device, &name_info);
+    }
 }
 }

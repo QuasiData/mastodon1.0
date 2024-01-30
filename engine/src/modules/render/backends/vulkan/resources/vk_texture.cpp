@@ -127,7 +127,7 @@ Texture::Texture(
 
 void Texture::create_sampler(
     const VkFilter mag_filter, const VkFilter min_filter, const VkSamplerMipmapMode mipmap_mode,
-    const VkSamplerAddressMode u_mode,const VkSamplerAddressMode v_mode, const VkSamplerAddressMode w_mode,
+    const VkSamplerAddressMode u_mode, const VkSamplerAddressMode v_mode, const VkSamplerAddressMode w_mode,
     const f32 mip_lod_bias, const VkCompareOp compare_op, const f32 min_lod, const f32 max_lod,
     const VkBorderColor border_color, const f32 anisotropy)
 {
@@ -261,5 +261,41 @@ void Texture::set_layout_cmd(const VkCommandBuffer cmd, const VkImageLayout new_
 
     vkCmdPipelineBarrier2(cmd, &dep_info);
     layout = new_layout;
+}
+
+void Texture::set_debug_name(const std::string& name)
+{
+    if constexpr (enable_validation)
+    {
+        auto name_info = VkDebugUtilsObjectNameInfoEXT{};
+        name_info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
+        name_info.objectHandle = reinterpret_cast<u64>(image);
+        name_info.objectType = VK_OBJECT_TYPE_BUFFER;
+
+        std::string ext = " image";
+        name_info.pObjectName = (name + ext).c_str();
+
+        vkSetDebugUtilsObjectNameEXT(context->device, &name_info);
+
+        name_info = VkDebugUtilsObjectNameInfoEXT{};
+        name_info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
+        name_info.objectHandle = reinterpret_cast<u64>(image_view);
+        name_info.objectType = VK_OBJECT_TYPE_BUFFER;
+
+        ext = " view";
+        name_info.pObjectName = (name + ext).c_str();
+
+        vkSetDebugUtilsObjectNameEXT(context->device, &name_info);
+
+        name_info = VkDebugUtilsObjectNameInfoEXT{};
+        name_info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
+        name_info.objectHandle = reinterpret_cast<u64>(sampler);
+        name_info.objectType = VK_OBJECT_TYPE_BUFFER;
+
+        ext = " sampler";
+        name_info.pObjectName = (name + ext).c_str();
+
+        vkSetDebugUtilsObjectNameEXT(context->device, &name_info);
+    }
 }
 }

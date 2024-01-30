@@ -16,6 +16,12 @@ namespace mas::gfx::vulkan
 {
 constexpr u32 back_buffer_count{ 2 };
 
+#if _DEBUG
+constexpr bool enable_validation{ true };
+#else
+constexpr bool enable_validation{ true };
+#endif
+
 struct QueueFamilyIndices
 {
     std::optional<u32> graphics_family = std::nullopt;

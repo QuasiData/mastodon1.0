@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;FMT_HEADER_ONLY;SPDLOG_FMT_EXTERNAL;VK_NO_PROTOTYPES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -118,7 +118,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(ProjectDir)external\libs\;$(Vulkan_SDK)\Lib\;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -129,7 +129,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;FMT_HEADER_ONLY;SPDLOG_FMT_EXTERNAL;VK_NO_PROTOTYPES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -145,7 +145,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(ProjectDir)external\libs\;$(Vulkan_SDK)\Lib\;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -564,6 +564,23 @@
     <ClInclude Include="external\include\spdlog\stopwatch.h" />
     <ClInclude Include="external\include\spdlog\tweakme.h" />
     <ClInclude Include="external\include\spdlog\version.h" />
+    <ClInclude Include="external\include\spirv_cross\GLSL.std.450.h" />
+    <ClInclude Include="external\include\spirv_cross\spirv.h" />
+    <ClInclude Include="external\include\spirv_cross\spirv.hpp" />
+    <ClInclude Include="external\include\spirv_cross\spirv_cfg.hpp" />
+    <ClInclude Include="external\include\spirv_cross\spirv_common.hpp" />
+    <ClInclude Include="external\include\spirv_cross\spirv_cpp.hpp" />
+    <ClInclude Include="external\include\spirv_cross\spirv_cross.hpp" />
+    <ClInclude Include="external\include\spirv_cross\spirv_cross_c.h" />
+    <ClInclude Include="external\include\spirv_cross\spirv_cross_containers.hpp" />
+    <ClInclude Include="external\include\spirv_cross\spirv_cross_error_handling.hpp" />
+    <ClInclude Include="external\include\spirv_cross\spirv_cross_parsed_ir.hpp" />
+    <ClInclude Include="external\include\spirv_cross\spirv_cross_util.hpp" />
+    <ClInclude Include="external\include\spirv_cross\spirv_glsl.hpp" />
+    <ClInclude Include="external\include\spirv_cross\spirv_hlsl.hpp" />
+    <ClInclude Include="external\include\spirv_cross\spirv_msl.hpp" />
+    <ClInclude Include="external\include\spirv_cross\spirv_parser.hpp" />
+    <ClInclude Include="external\include\spirv_cross\spirv_reflect.hpp" />
     <ClInclude Include="external\include\taskflow\algorithm\critical.hpp" />
     <ClInclude Include="external\include\taskflow\algorithm\data_pipeline.hpp" />
     <ClInclude Include="external\include\taskflow\algorithm\find.hpp" />
@@ -653,6 +670,7 @@
     <ClInclude Include="src\modules\asset\asset_loader.h" />
     <ClInclude Include="src\modules\asset\tangents.h" />
     <ClInclude Include="src\modules\input\input_module.h" />
+    <ClInclude Include="src\modules\render\backends\vulkan\render_graph.h" />
     <ClInclude Include="src\modules\render\backends\vulkan\resources\vk_buffer.h" />
     <ClInclude Include="src\modules\render\backends\vulkan\resources\vk_resource_manager.h" />
     <ClInclude Include="src\modules\render\backends\vulkan\resources\vk_texture.h" />
@@ -677,6 +695,18 @@
     <ClCompile Include="external\include\imgui\imgui_tables.cpp" />
     <ClCompile Include="external\include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="external\include\mikkt\mikktspace.c" />
+    <ClCompile Include="external\include\spirv_cross\main.cpp" />
+    <ClCompile Include="external\include\spirv_cross\spirv_cfg.cpp" />
+    <ClCompile Include="external\include\spirv_cross\spirv_cpp.cpp" />
+    <ClCompile Include="external\include\spirv_cross\spirv_cross.cpp" />
+    <ClCompile Include="external\include\spirv_cross\spirv_cross_c.cpp" />
+    <ClCompile Include="external\include\spirv_cross\spirv_cross_parsed_ir.cpp" />
+    <ClCompile Include="external\include\spirv_cross\spirv_cross_util.cpp" />
+    <ClCompile Include="external\include\spirv_cross\spirv_glsl.cpp" />
+    <ClCompile Include="external\include\spirv_cross\spirv_hlsl.cpp" />
+    <ClCompile Include="external\include\spirv_cross\spirv_msl.cpp" />
+    <ClCompile Include="external\include\spirv_cross\spirv_parser.cpp" />
+    <ClCompile Include="external\include\spirv_cross\spirv_reflect.cpp" />
     <ClCompile Include="external\include\volk\volk.c" />
     <ClCompile Include="src\engine.cpp" />
     <ClCompile Include="src\modules\asset\asset_loader.cpp" />

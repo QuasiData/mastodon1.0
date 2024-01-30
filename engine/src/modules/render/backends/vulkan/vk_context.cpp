@@ -13,12 +13,6 @@ namespace mas::gfx::vulkan
 {
 namespace
 {
-#if _DEBUG
-constexpr bool enable_validation{ true };
-#else
-constexpr bool enable_validation{ true };
-#endif
-
 bool is_device_suitable(const VkPhysicalDevice physical_device, const std::vector<const char*>& req_extensions)
 {
     VkPhysicalDeviceProperties2 dp{};

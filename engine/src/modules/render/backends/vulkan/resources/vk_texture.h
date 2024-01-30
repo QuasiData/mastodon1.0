@@ -1,6 +1,8 @@
 #pragma once
 #include "../vk_context.h"
 
+#include <string>
+
 namespace mas::gfx::vulkan
 {
 DEFINE_TYPED_ID(Texture)
@@ -29,6 +31,8 @@ public:
     void set_layout_now(VkImageLayout new_layout, VkPipelineStageFlagBits2 src_stage, VkPipelineStageFlagBits2 dst_stage);
 
     void set_layout_cmd(VkCommandBuffer cmd, VkImageLayout new_layout, VkPipelineStageFlagBits2 src_stage, VkPipelineStageFlagBits2 dst_stage);
+
+    void set_debug_name(const std::string& name);
 
 private:
     std::shared_ptr<Context> context{ nullptr };

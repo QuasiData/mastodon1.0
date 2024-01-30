@@ -1,5 +1,7 @@
 #include "vk_resource_manager.h"
 
+#include "spdlog/spdlog.h"
+
 #include <ranges>
 #include <stdexcept>
 
@@ -9,6 +11,130 @@ ResourceManager::ResourceManager(std::shared_ptr<Context> c)
     : context(std::move(c)), command(Command(context, context->graphics_queue, context->queue_family_indices.graphics_family.value(), 1))
 {}
 
+std::expected<BufferId, ResourceError> ResourceManager::add_buffer(Buffer buffer, const std::string& name)
+{
+    const auto id = BufferId{ next_buffer_id++ };
+
+    if (!name.empty())
+    {
+        if (const auto result = named_buffers.insert({ name, id }).second; !result)
+        {
+            return std::unexpected(ResourceError::AlreadyExists);
+        }
+    }
+
+    buffer_map.insert({ id, std::move(buffer) });
+
+    return id;
+}
+
+std::expected<TextureId, ResourceError> ResourceManager::add_texture(Texture texture, const std::string& name)
+{
+    const auto id = TextureId{ next_text_id++ };
+
+    if (!name.empty())
+    {
+        if (const auto result = named_textures.insert({ name, id }).second; !result)
+        {
+            return std::unexpected(ResourceError::AlreadyExists);
+        }
+    }
+
+    texture_map.insert({ id, std::move(texture) });
+
+    return id;
+}
+
+std::expected<void, ResourceError> ResourceManager::remove_buffer(const BufferId id)
+{
+    if (buffer_map.contains(id))
+    {
+        buffer_map.erase(id);
+        return {};
+    }
+
+    return std::unexpected(ResourceError::NotFound);
+}
+
+std::expected<void, ResourceError> ResourceManager::remove_texture(const TextureId id)
+{
+    if (texture_map.contains(id))
+    {
+        texture_map.erase(id);
+        return {};
+    }
+
+    return std::unexpected(ResourceError::NotFound);
+}
+
+std::optional<std::reference_wrapper<Buffer>> ResourceManager::get_buffer(const BufferId id)
+{
+    if (buffer_map.contains(id))
+    {
+        return std::reference_wrapper(buffer_map.at(id));
+    }
+
+    return std::nullopt;
+}
+
+std::optional<std::reference_wrapper<Buffer>> ResourceManager::get_buffer_by_name(const std::string& name)
+{
+    if (named_buffers.contains(name))
+    {
+        const auto id = named_buffers[name];
+
+        assert(buffer_map.contains(id));
+
+        return std::reference_wrapper(buffer_map.at(id));
+    }
+
+    return std::nullopt;
+}
+
+std::optional<BufferId> ResourceManager::get_buffer_id(const std::string& name)
+{
+    if (named_buffers.contains(name))
+    {
+        return named_buffers[name];
+    }
+
+    return std::nullopt;
+}
+
+std::optional<std::reference_wrapper<Texture>> ResourceManager::get_texture(const TextureId id)
+{
+    if (texture_map.contains(id))
+    {
+        return std::reference_wrapper(texture_map.at(id));
+    }
+
+    return std::nullopt;
+}
+
+std::optional<std::reference_wrapper<Texture>> ResourceManager::get_texture_by_name(const std::string& name)
+{
+    if (named_textures.contains(name))
+    {
+        const auto id = named_textures[name];
+
+        assert(texture_map.contains(id));
+
+        return std::reference_wrapper(texture_map.at(id));
+    }
+
+    return std::nullopt;
+}
+
+std::optional<TextureId> ResourceManager::get_texture_id(const std::string& name)
+{
+    if (named_textures.contains(name))
+    {
+        return named_textures[name];
+    }
+
+    return std::nullopt;
+}
+
 void ResourceManager::upload_models(const std::vector<std::tuple<Model, gfx::MeshData, gfx::MaterialData>>& model_data)
 {
     for (usize i{ 0 }; i < model_data.size(); ++i)
@@ -17,102 +143,26 @@ void ResourceManager::upload_models(const std::vector<std::tuple<Model, gfx::Mes
         const auto& [vertices, indices] = std::get<gfx::MeshData>(model_data[i]);
         const auto& [present, albedo, normals, metallic_roughness, emissive] = std::get<gfx::MaterialData>(model_data[i]);
 
-        Buffer vertex_buffer(context, vertices.size() * sizeof(VertexP3N3U2T4), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, 0, vertices.data());
-        Buffer index_buffer(context, indices.size() * sizeof(VertexIndexType), VK_BUFFER_USAGE_INDEX_BUFFER_BIT, 0, indices.data());
+        Buffer vertex_buffer(context, vertices.size() * sizeof(VertexP3N3U2T4), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, vertices.data());
+        Buffer index_buffer(context, indices.size() * sizeof(VertexIndexType), VK_BUFFER_USAGE_INDEX_BUFFER_BIT, indices.data());
 
         MaterialEntry material_entry{};
 
         if ((present & MaterialFlag::Albedo) != MaterialFlag::None)
         {
-            Buffer albedo_buff(context, albedo.width * albedo.height * albedo.channels, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, 0, albedo.data.data());
-
-            Texture albedo_text(context, VK_IMAGE_TYPE_2D, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT,
-                                VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, VK_IMAGE_TILING_OPTIMAL, VK_SAMPLE_COUNT_1_BIT,
-                                0, static_cast<u32>(albedo.width), static_cast<u32>(albedo.height), 1, 1, 1);
-
-            albedo_text.create_sampler();
-
-            VkBufferImageCopy image_copy{};
-            image_copy.imageSubresource = VkImageSubresourceLayers{ albedo_text.aspect, 0, 0, 1 };
-            image_copy.imageExtent = albedo_text.extent;
-            image_copy.imageOffset = { 0, 0, 0 };
-            image_copy.bufferOffset = 0;
-
-            copy_buffer_to_texture(albedo_buff, albedo_text, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, { image_copy });
-
-            const auto albedo_id = TextureId{ next_text_id++ };
-            texture_map.insert({ albedo_id, std::move(albedo_text) });
-
-            material_entry.albedo = albedo_id;
+            material_entry.albedo = upload_texture(VK_FORMAT_R8G8B8A8_SRGB, albedo);
         }
         if ((present & MaterialFlag::Normal) != MaterialFlag::None)
         {
-            Buffer normal_buff(context, normals.width * normals.height * normals.channels, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, 0, normals.data.data());
-
-            Texture normal_text(context, VK_IMAGE_TYPE_2D, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT,
-                                VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, VK_IMAGE_TILING_OPTIMAL, VK_SAMPLE_COUNT_1_BIT,
-                                0, static_cast<u32>(normals.width), static_cast<u32>(normals.height), 1, 1, 1);
-
-            normal_text.create_sampler();
-
-            VkBufferImageCopy image_copy{};
-            image_copy.imageSubresource = VkImageSubresourceLayers{ normal_text.aspect, 0, 0, 1 };
-            image_copy.imageExtent = normal_text.extent;
-            image_copy.imageOffset = { 0, 0, 0 };
-            image_copy.bufferOffset = 0;
-
-            copy_buffer_to_texture(normal_buff, normal_text, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, { image_copy });
-
-            const auto normal_id = TextureId{ next_text_id++ };
-            texture_map.insert({ normal_id, std::move(normal_text) });
-
-            material_entry.normal = normal_id;
+            material_entry.normal = upload_texture(VK_FORMAT_R8G8B8A8_UNORM, normals);
         }
         if ((present & MaterialFlag::MetallicRoughness) != MaterialFlag::None)
         {
-            Buffer metallic_roughness_buff(context, metallic_roughness.width * metallic_roughness.height * metallic_roughness.channels, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, 0, metallic_roughness.data.data());
-
-            Texture metallic_roughness_text(context, VK_IMAGE_TYPE_2D, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT,
-                                VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, VK_IMAGE_TILING_OPTIMAL, VK_SAMPLE_COUNT_1_BIT,
-                                0, static_cast<u32>(metallic_roughness.width), static_cast<u32>(metallic_roughness.height), 1, 1, 1);
-
-            metallic_roughness_text.create_sampler();
-
-            VkBufferImageCopy image_copy{};
-            image_copy.imageSubresource = VkImageSubresourceLayers{ metallic_roughness_text.aspect, 0, 0, 1 };
-            image_copy.imageExtent = metallic_roughness_text.extent;
-            image_copy.imageOffset = { 0, 0, 0 };
-            image_copy.bufferOffset = 0;
-
-            copy_buffer_to_texture(metallic_roughness_buff, metallic_roughness_text, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, { image_copy });
-
-            const auto metallic_roughness_id = TextureId{ next_text_id++ };
-            texture_map.insert({ metallic_roughness_id, std::move(metallic_roughness_text) });
-
-            material_entry.metallic_roughness = metallic_roughness_id;
+            material_entry.metallic_roughness = upload_texture(VK_FORMAT_R8G8B8A8_UNORM, metallic_roughness);
         }
         if ((present & MaterialFlag::Emissive) != MaterialFlag::None)
         {
-            Buffer emissive_buff(context, emissive.width * emissive.height * emissive.channels, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, 0, emissive.data.data());
-
-            Texture emissive_text(context, VK_IMAGE_TYPE_2D, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT,
-                                  VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, VK_IMAGE_TILING_OPTIMAL, VK_SAMPLE_COUNT_1_BIT,
-                                  0, static_cast<u32>(emissive.width), static_cast<u32>(emissive.height), 1, 1, 1);
-
-            emissive_text.create_sampler();
-
-            VkBufferImageCopy image_copy{};
-            image_copy.imageSubresource = VkImageSubresourceLayers{ emissive_text.aspect, 0, 0, 1 };
-            image_copy.imageExtent = emissive_text.extent;
-            image_copy.imageOffset = { 0, 0, 0 };
-            image_copy.bufferOffset = 0;
-
-            copy_buffer_to_texture(emissive_buff, emissive_text, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, { image_copy });
-
-            const auto emissive_id = TextureId{ next_text_id++ };
-            texture_map.insert({ emissive_id, std::move(emissive_text) });
-
-            material_entry.emissive = emissive_id;
+            material_entry.emissive = upload_texture(VK_FORMAT_R8G8B8A8_UNORM, emissive);
         }
 
         const auto vertex_buffer_id = BufferId{ next_buffer_id++ };
@@ -126,6 +176,30 @@ void ResourceManager::upload_models(const std::vector<std::tuple<Model, gfx::Mes
         material_registry.insert({ material_id, material_entry });
     }
     vkDeviceWaitIdle(context->device);
+}
+
+TextureId ResourceManager::upload_texture(const VkFormat format, const TextureData& data)
+{
+    const Buffer buff(context, data.width * data.height * data.channels, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, data.data.data());
+
+    Texture text(context, VK_IMAGE_TYPE_2D, format, VK_IMAGE_ASPECT_COLOR_BIT,
+                 VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, VK_IMAGE_TILING_OPTIMAL, VK_SAMPLE_COUNT_1_BIT,
+                 0, static_cast<u32>(data.width), static_cast<u32>(data.height), 1, 1, 1);
+
+    text.create_sampler();
+
+    VkBufferImageCopy image_copy{};
+    image_copy.imageSubresource = VkImageSubresourceLayers{ text.aspect, 0, 0, 1 };
+    image_copy.imageExtent = text.extent;
+    image_copy.imageOffset = { 0, 0, 0 };
+    image_copy.bufferOffset = 0;
+
+    copy_buffer_to_texture(buff, text, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, { image_copy });
+
+    const auto id = TextureId{ next_text_id++ };
+    texture_map.insert({ id, std::move(text) });
+
+    return id;
 }
 
 void ResourceManager::copy_buffer_to_texture(const Buffer& buffer, Texture& texture, const VkImageLayout new_layout, const std::vector<VkBufferImageCopy>& regions) const
