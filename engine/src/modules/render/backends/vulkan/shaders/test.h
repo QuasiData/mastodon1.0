@@ -8,6 +8,14 @@ namespace mas::gfx::vulkan
 class TestNode final: public RenderNode
 {
 public:
-    void setup_resources(const std::shared_ptr<Context>& context, const ResourceManager& resource_manager) override;
+    void setup_resources(const std::shared_ptr<Context>& context, ResourceManager& resource_manager) override;
+
+};
+
+class PlutNode final: public RenderNode
+{
+public:
+    void setup_resources(const std::shared_ptr<Context>& context, ResourceManager& resource_manager) override;
+
 };
 }

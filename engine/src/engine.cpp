@@ -33,7 +33,7 @@ App::App(const AppSettings& settings)
     world.set(KeyboardInput{});
     world.set(MouseInput{});
 
-    world.set<Renderer>(std::make_shared<gfx::vulkan::Renderer>(world.get<Window>()->get_raw_window()));
+    world.set<Renderer>(std::make_shared<gfx::vulkan::Renderer>(world.get<Window>()->get_raw_window(), &world));
     world.set(AssetLoader{});
 
     world.get_mut<AssetLoader>()->inject_renderer(*world.get_mut<Renderer>());

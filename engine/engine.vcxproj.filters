@@ -1739,6 +1739,9 @@
     <ClCompile Include="src\modules\render\backends\vulkan\shaders\test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\modules\render\backends\vulkan\render_graph.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="external\include\glm\detail\func_common.inl">

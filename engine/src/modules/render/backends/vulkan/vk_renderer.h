@@ -9,13 +9,15 @@ namespace mas::gfx::vulkan
 class Renderer final : public gfx::Renderer
 {
 public:
-    explicit Renderer(GLFWwindow* window);
+    explicit Renderer(GLFWwindow* window, flecs::world* world);
     ~Renderer() override;
     DISABLE_COPY_AND_MOVE(Renderer)
 
     void add_models(const std::vector<std::tuple<Model, gfx::MeshData, gfx::MaterialData>>& model_data) override;
 
     void render(flecs::world* w) override;
+
+    void startup_done() override;
 
 private:
     void create_render_sync_objects();

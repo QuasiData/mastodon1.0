@@ -713,6 +713,7 @@
     <ClCompile Include="src\modules\asset\asset_loader.cpp" />
     <ClCompile Include="src\modules\asset\tangents.cpp" />
     <ClCompile Include="src\modules\input\input_module.cpp" />
+    <ClCompile Include="src\modules\render\backends\vulkan\render_graph.cpp" />
     <ClCompile Include="src\modules\render\backends\vulkan\resources\vk_buffer.cpp" />
     <ClCompile Include="src\modules\render\backends\vulkan\resources\vk_resource_manager.cpp" />
     <ClCompile Include="src\modules\render\backends\vulkan\resources\vk_texture.cpp" />

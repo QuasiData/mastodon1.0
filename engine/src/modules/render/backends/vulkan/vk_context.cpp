@@ -124,6 +124,7 @@ Context::Context(GLFWwindow* w)
     alloc_ci.physicalDevice = phys_device;
     alloc_ci.vulkanApiVersion = VK_API_VERSION_1_3;
     alloc_ci.pVulkanFunctions = &vma_vulkan_func;
+    alloc_ci.flags = VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT;
 
     vmaCreateAllocator(&alloc_ci, &allocator);
 

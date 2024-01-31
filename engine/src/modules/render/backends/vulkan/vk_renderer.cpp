@@ -5,16 +5,54 @@
 
 #include <stdexcept>
 
+
+// TEMPORARY
+#include "shaders/test.h"
+
 namespace mas::gfx::vulkan
 {
-Renderer::Renderer(GLFWwindow* window)
+Renderer::Renderer(GLFWwindow* window, flecs::world* w)
     : context(std::make_shared<Context>(window)),
     resource_manager(context),
     render_graph(context),
     ui_overlay(context),
-    draw_command(Command(context, context->graphics_queue, context->queue_family_indices.graphics_family.value(), back_buffer_count))
+    draw_command(Command(context, context->graphics_queue, context->queue_family_indices.graphics_family.value(), back_buffer_count)),
+    world(w)
 {
     create_render_sync_objects();
+
+    auto test1 = std::make_unique<TestNode>();
+    auto test2 = std::make_unique<TestNode>();
+    auto test3 = std::make_unique<TestNode>();
+    auto test4 = std::make_unique<TestNode>();
+    auto test5 = std::make_unique<TestNode>();
+    auto test6 = std::make_unique<TestNode>();
+
+    render_graph.add_node(std::move(test1), "test1", "first");
+    render_graph.add_node(std::move(test2), "test2", "first");
+
+    render_graph.add_node(std::move(test3), "test3", "second");
+    render_graph.add_node(std::move(test4), "test4", "second");
+
+    render_graph.add_node(std::move(test5), "test5", "third");
+    render_graph.add_node(std::move(test6), "test6", "third");
+
+    render_graph.add_pass("first", RenderPassType::Render);
+    render_graph.add_pass("second", RenderPassType::Compute);
+    render_graph.add_pass("third", RenderPassType::Render);
+
+    render_graph.add_node_edge("test6", "test5");
+    render_graph.add_node_edge("test1", "test5");
+    render_graph.add_node_edge("test2", "test3");
+    render_graph.add_node_edge("test3", "test5");
+    render_graph.add_node_edge("test4", "test5");
+    render_graph.add_node_edge("test1", "test4");
+    render_graph.add_node_edge("test2", "test5");
+
+    render_graph.add_pass_edge("second", "first");
+    render_graph.add_pass_edge("second", "third");
+
+    render_graph.setup();
 }
 
 Renderer::~Renderer()
@@ -32,6 +70,15 @@ Renderer::~Renderer()
 void Renderer::add_models(const std::vector<std::tuple<Model, gfx::MeshData, gfx::MaterialData>>& model_data)
 {
     resource_manager.upload_models(model_data);
+}
+
+void Renderer::startup_done() 
+{
+    render_graph.setup();
+    render_graph.setup_node_resources(resource_manager);
+    render_graph.ready_node_resources(resource_manager);
+    render_graph.update_node_resources(resource_manager, world);
+    render_graph.setup_nodes(resource_manager);
 }
 
 void Renderer::create_render_sync_objects()
@@ -54,9 +101,11 @@ void Renderer::create_render_sync_objects()
 
 void Renderer::render(flecs::world* w)
 {
+    world = w;
     UiOverlay::new_frame();
 
     ImGui::ShowDemoWindow();
+    render_graph.draw_ui(w);
 
     UiOverlay::end_frame();
 
